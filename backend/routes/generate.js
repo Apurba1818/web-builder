@@ -36,7 +36,7 @@ Prompt: ${prompt.trim()}`;
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const result = await genAI
-      .getGenerativeModel({ model: "gemini-2.5-flash-lite" })
+      .getGenerativeModel({ model: "gemini-2.5-pro" })
       .generateContent(text_prompt);
 
     const raw = result.response.text();
