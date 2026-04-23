@@ -11,12 +11,11 @@ import { RiComputerLine } from "react-icons/ri";
 import { FaTabletAlt } from "react-icons/fa";
 import { ImMobile2 } from "react-icons/im";
 import { IoMdClose } from "react-icons/io";
-// import { GoogleGenerativeAI } from "@google/generative-ai";
-// import { API_KEY } from './helper';
+
 import { toast } from 'react-toastify';
 import { FadeLoader } from 'react-spinners';
 import RecentSearches from "./components/RecentSearches";
-// ADD this line with existing imports
+
 import { useUser } from '@clerk/clerk-react';
  
 const App = () => {
@@ -57,8 +56,7 @@ const App = () => {
   }, [isDarkMode]);
 
   
-  // ✅ Fix 1: Pass API_KEY directly, not as an object
-  // const genAI = new GoogleGenerativeAI(API_KEY);
+  
  
   
   function extractCode(response) {
@@ -152,11 +150,18 @@ async function getResponse() {
           <div className="header w-full h-[70px]">
             <h3 className='font-bold text-[16px]'>Live Preview</h3>
  
-            <div className="icons flex items-center gap-[15px]">
-              <div onClick={() => { setIsInNewTab(true) }} className="icon !w-[auto] !p-[12px] flex items-center gap-[10px]">Open in new tab <ImNewTab /></div>
-              <div onClick={downloadCode} className="icon !w-[auto] !p-[12px] flex items-center gap-[10px]">Download <IoMdDownload /></div>
-              <div onClick={() => { setIsShowCode(!isShowCode) }} className="icon !w-[auto] !p-[12px] flex items-center gap-[10px]">{isShowCode ? "Hide Code" : "Show Code"} {isShowCode ? <FaEyeSlash /> : <BiSolidShow />}</div>
-            </div>
+            <div className="icons flex items-center gap-[8px] md:gap-[15px]">
+  <div onClick={() => { setIsInNewTab(true) }} className="icon !w-[auto] !p-[8px] md:!p-[12px] flex items-center gap-[6px] text-[13px] md:text-[14px]">
+    <span className="hidden sm:inline">Open in new tab</span> <ImNewTab />
+  </div>
+  <div onClick={downloadCode} className="icon !w-[auto] !p-[8px] md:!p-[12px] flex items-center gap-[6px] text-[13px] md:text-[14px]">
+    <span className="hidden sm:inline">Download</span> <IoMdDownload />
+  </div>
+  <div onClick={() => { setIsShowCode(!isShowCode) }} className="icon !w-[auto] !p-[8px] md:!p-[12px] flex items-center gap-[6px] text-[13px] md:text-[14px]">
+    <span className="hidden sm:inline">{isShowCode ? "Hide Code" : "Show Code"}</span>
+    {isShowCode ? <FaEyeSlash /> : <BiSolidShow />}
+  </div>
+</div>
           </div>
  
           {
@@ -170,7 +175,7 @@ async function getResponse() {
                     <h3 className='text-[23px] mt-4 font-semibold'><span className='bg-gradient-to-br from-violet-400  to-purple-600 bg-clip-text text-transparent'>Generating</span> your website...</h3>
                   </div> :
                   <>
-                    {/* ✅ Fix 5: Added h-[80vh] so iframe is actually visible */}
+                    
                     <iframe srcDoc={code} className='w-full h-[80vh] bg-[white]'></iframe>
                   </>
               }
@@ -210,4 +215,5 @@ async function getResponse() {
 }
  
 export default App
+
 
