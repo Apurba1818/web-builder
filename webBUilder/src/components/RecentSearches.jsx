@@ -27,13 +27,13 @@ export default function RecentSearches({ userId, refresh, setPrompt }) {
   };
 
  return (
-  <div className="mt-8 ml-[5vw] w-[90vw]">
+  <div className="mt-8 w-full">
     
-    <h4 className="text-lg font-semibold text-white mb-3">
-      Recent Searches
-    </h4>
+      <h4 className="text-lg font-semibold mb-3 recentTitle" style={{color: 'var(--color-text)'}}>
+  Recent Searches
+      </h4>
 
-    <div className="flex gap-3 overflow-x-auto pb-2">
+    <div className="flex gap-3 overflow-x-auto pb-2 recentScrollbar">
       {searches.length === 0 ? (
         <div className="text-gray-400 text-sm">
           No recent searches yet
@@ -41,12 +41,13 @@ export default function RecentSearches({ userId, refresh, setPrompt }) {
       ) : (
         searches.map((item) => (
           <div
-            key={item._id}
-            onClick={() => setPrompt(item.prompt)}
-            className="relative min-w-[250px] bg-white/5 backdrop-blur-md border border-white/10 
-                       hover:border-purple-500 hover:bg-white/10 
-                       transition-all duration-300 
-                       p-3 rounded-lg cursor-pointer group"
+             key={item._id}
+             onClick={() => setPrompt(item.prompt)}
+             className="recentCard relative min-w-[250px] backdrop-blur-md
+             transition-all duration-300 
+             p-3 rounded-lg cursor-pointer group
+             bg-white/5 border border-white/10
+             hover:border-purple-500 hover:bg-white/10"
           >
             <button
               onClick={(e) => {
@@ -58,12 +59,10 @@ export default function RecentSearches({ userId, refresh, setPrompt }) {
               <IoMdClose size={16} />
             </button>
 
-            <p className="text-sm text-gray-300 group-hover:text-white truncate">
-              {item.prompt}
+            <p className="promptText text-sm truncate" style={{color: 'var(--color-text-desc)'}}>
+            {item.prompt}
             </p>
-
-            <span className="text-xs text-gray-500">
-              {new Date(item.createdAt).toLocaleString()}
+            <span className="dateText text-xs" style={{color: 'var(--color-text-dim)'}}>
             </span>
           </div>
         ))
