@@ -143,22 +143,22 @@ html {
   margin-right: auto;
   border-radius: 15px;
   overflow: hidden;
-  height: auto;          /* ← was 90vh, let content define height */
+  height: auto;          
 }
 .preview .header {
   background-color: rgb(46, 44, 44);
   border-radius: 5px 5px 0 0;
-  padding: 0px 16px;
+  padding: 0px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;       /* ← prevents overflow on small screens */
+  min-height: 56px;        
+  flex-wrap: nowrap;       
   gap: 8px;
-  min-height: 70px;
 }
 .preview iframe {
   width: 100%;
-  height: 75vh;          /* ← consistent across devices */
+  height: 75vh;          
   overflow: auto;
   display: block;
 }
@@ -230,7 +230,7 @@ html {
   border-radius: 10px;
 }
 .recentScrollbar::-webkit-scrollbar-thumb {
-  background: var(--color-accent);   /* purple #9933ff */
+  background: var(--color-accent);   
   border-radius: 10px;
 }
 .recentScrollbar::-webkit-scrollbar-thumb:hover {
