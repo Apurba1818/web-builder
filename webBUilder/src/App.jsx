@@ -73,6 +73,25 @@ const App = () => {
     a.download = filename;
     a.click();
   };
+
+ // ADD this function
+function getSandboxedCode(rawCode) {
+  const blocker = `
+    <script>
+      // Block all navigation attempts
+      window.addEventListener('click', function(e) {
+        const a = e.target.closest('a');
+        if (a) { e.preventDefault(); e.stopPropagation(); }
+      }, true);
+      window.open = function() { return null; };
+      Object.defineProperty(window, 'location', {
+        get: function() { return window._fakeLocation || {}; },
+        set: function() {}
+      });
+    <\/script>
+  `;
+  return rawCode.replace('</body>', blocker + '</body>');
+}
  
 //   
 async function getResponse() {
@@ -177,9 +196,9 @@ async function getResponse() {
                   <>
                     
                     <iframe
-  srcDoc={code}
+  srcDoc={getSandboxedCode(code)}
   className='w-full h-[80vh] bg-[white]'
-  sandbox="allow-scripts"
+  sandbox="allow-scripts allow-same-origin"
 />
                   </>
               }
@@ -210,10 +229,10 @@ async function getResponse() {
                   </div>
                 </div>
                 <iframe
-srcDoc={code}
-className='w-full newTabIframe'
-sandbox="allow-scripts"
-                />
+  srcDoc={getSandboxedCode(code)}
+  className='w-full h-[80vh] bg-[white]'
+  sandbox="allow-scripts allow-same-origin"
+/>
               </div>
             </div>
           </> : ""
