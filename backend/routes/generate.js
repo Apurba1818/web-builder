@@ -22,21 +22,20 @@ router.post("/", async (req, res) => {
     return res.status(500).json({ error: "Server misconfigured: missing API key" });
   }
 
-  const text_prompt = `Act as a Senior Frontend Dev. Generate a single, production-ready HTML file using Tailwind CDN and GSAP.
+  const text_prompt = `You are a frontend developer. Generate a single complete HTML file.
 
-Requirements:
-Fully responsive (Mobile/Desktop).
-Theme: Dark/Light toggle included.
-UI: Sticky Navbar, Hero with CTA, Features Grid, Footer ("Made with WebBuilder").
-Visuals: GSAP animations, Unsplash images, Glassmorphism.
-Output: Single Markdown code block ONLY. No prose/explanation.
+TECH: Tailwind CDN, GSAP CDN, Google Fonts
+SECTIONS: Navbar, Hero, Features (3 cards), Footer ("Made with WebBuilder")  
+DESIGN: Dark mode toggle, responsive, glassmorphism cards
+ANIMATIONS: Simple GSAP fade-in on load only
+OUTPUT: Single code block only. No explanation.
 
-Prompt: ${prompt.trim()}`;
+Topic: ${prompt.trim()}`;
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const result = await genAI
-      .getGenerativeModel({ model: "gemini-2.5-flash" })
+      .getGenerativeModel({ model: "gemini-2.5-flash-lite" })
       .generateContent(text_prompt);
 
     const raw = result.response.text();
