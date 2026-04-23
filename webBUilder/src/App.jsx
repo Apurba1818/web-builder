@@ -46,7 +46,7 @@ const App = () => {
   setIsDarkMode(prev => !prev);
 };
  
-// ✅ ADD THIS
+
   useEffect(() => {
     if (isDarkMode) {
       document.body.classList.remove("light-mode");
@@ -165,7 +165,7 @@ async function getResponse() {
         
 
         
-        <div className="preview ">
+        <div className={`preview ${isShowCode ? 'codeView' : ''}`}>
           <div className="header w-full h-[70px]">
             <h3 className='font-bold text-[16px]'>Live Preview</h3>
  
@@ -185,7 +185,7 @@ async function getResponse() {
  
           {
             isShowCode ? <>
-              <Editor onChange={(code)=>{setCode(code)}} height="100%" theme='vs-dark' defaultLanguage="html" value={code} />
+              <Editor onChange={(code)=>{setCode(code)}} height="75vh" theme='vs-dark' defaultLanguage="html" value={code} />
             </> : <>
               {
                 loading ?
