@@ -1,17 +1,17 @@
-// index.js — Express server (works locally + Vercel serverless)
+
+// index.js
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
 const { connectDB } = require("./db");
 
-connectDB();
-
-const generateRoute = require("./routes/generate");
-const searchesRoute = require("./routes/searches");
-
 const app = express();
 
+// connect DB (non-blocking)
+connectDB();
+
+// middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || "*",
   methods: ["GET", "POST", "DELETE", "OPTIONS"],
@@ -20,20 +20,23 @@ app.use(cors({
 
 app.use(express.json());
 
-// Routes
+// routes
+const generateRoute = require("./routes/generate");
+const searchesRoute = require("./routes/searches");
+
 app.use("/api/generate", generateRoute);
 app.use("/api/searches", searchesRoute);
 
+// health route
 app.get("/", (req, res) => {
   res.json({ status: "WebBuilder API is running ✅" });
 });
 
-// Local dev server
+// 🔥 FIXED: always start server
 const PORT = process.env.PORT || 3000;
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-  });
-}
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 module.exports = app;
