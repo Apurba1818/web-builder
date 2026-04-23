@@ -161,7 +161,7 @@ async function getResponse() {
 
         </div>
  
-        <p className='text-[20px] font-[700] mt-[10vh]'>Your AI-Genreated Website will appear here.</p>
+        <p className='text-[20px] font-[700] mt-[10vh]'>Your AI-Generated Website will appear here.</p>
         
 
         
