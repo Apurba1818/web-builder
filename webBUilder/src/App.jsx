@@ -176,7 +176,11 @@ async function getResponse() {
                   </div> :
                   <>
                     
-                    <iframe srcDoc={code} className='w-full h-[80vh] bg-[white]'></iframe>
+                    <iframe
+  srcDoc={code}
+  className='w-full h-[80vh] bg-[white]'
+  sandbox="allow-scripts"
+/>
                   </>
               }
             </>
@@ -205,7 +209,11 @@ async function getResponse() {
                     <div className="icon" onClick={() => { setIsInNewTab(false) }}><IoMdClose /></div>
                   </div>
                 </div>
-                <iframe srcDoc={code} className='w-full newTabIframe'></iframe>
+                <iframe
+srcDoc={code}
+className='w-full newTabIframe'
+sandbox="allow-scripts"
+                />
               </div>
             </div>
           </> : ""
