@@ -1,0 +1,193 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+body{
+  margin: 0;
+  padding: 0;
+  box-sizing:border-box ;
+  overflow-x: hidden;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+/* Light Mode Overrides */
+body.light-mode {
+  --color-bg: hsl(0, 0%, 98%);         /* White background */
+  --color-secondary: hsl(0, 0%, 94%);  /* Off-white */
+  --color-tertiary: hsl(0, 0%, 90%);   
+  --color-text: hsl(240, 6%, 5%);      /* Black text */
+  --color-text-desc: #4b5563;          /* Darker muted text */
+  --color-border: hsl(240, 6%, 85%);
+  --color-border-subtle: hsl(240, 6%, 90%);
+  --color-hover: hsl(240, 6%, 90%);
+  --color-overlay: hsla(0, 0%, 100%, 0.7);
+}
+
+/* Update your existing .preview header to adapt to light mode */
+body.light-mode .preview .header {
+  background-color: var(--color-tertiary);
+  color: var(--color-text);
+}
+html{
+  overflow-x: hidden;
+}
+:root {
+  /* Core Backgrounds */
+  --color-bg: hsl(240, 6%, 5%);        /* Deep black background */
+  --color-secondary: hsl(240, 6%, 8%); /* Slightly lighter black */
+  --color-tertiary: hsl(240, 6%, 12%); /* Cards, panels, modals */
+
+  /* Text */
+  --color-text: hsl(0, 0%, 98%);       /* Main text */
+  --color-text-desc: #b3b3b3;  /* Muted text */
+  --color-text-dim: hsl(0, 0%, 50%);   /* Disabled/placeholder text */
+
+  /* Borders & Dividers */
+  --color-border: hsl(240, 6%, 20%);
+  --color-border-subtle: hsl(240, 6%, 15%);
+
+  /* Accents */
+  --color-accent: #9933ff;  /* Primary accent (modern purple) */
+  --color-accent-hover: hsl(270, 100%, 65%);
+
+  /* State Colors */
+  --color-success: hsl(145, 60%, 45%); /* Green for success */
+  --color-error: hsl(0, 70%, 55%);     /* Red for errors */
+  --color-warning: hsl(40, 100%, 55%); /* Yellow for warnings */
+  --color-info: hsl(210, 100%, 60%);   /* Blue for info messages */
+
+  /* Overlays */
+  --color-overlay: hsla(240, 6%, 5%, 0.7);  /* For modals & menus */
+
+  /* Shadows */
+  --shadow-low: 0 2px 6px hsla(0, 0%, 0%, 0.5);
+  --shadow-mid: 0 4px 12px hsla(0, 0%, 0%, 0.6);
+  --shadow-high: 0 8px 24px hsla(0, 0%, 0%, 0.7);
+
+  /* Interactive */
+  --color-hover: hsl(240, 6%, 15%);
+  --color-active: hsl(240, 6%, 18%);
+  --color-focus-ring: hsl(270, 100%, 65%);
+}
+.nav{
+  border-bottom: 1px solid var(--color-border);
+}
+.icon{
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .3s;
+  border: 1px solid var(--color-border);
+}
+.icon:hover{
+  background-color: var(--color-hover);
+}
+.container{
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10vh;
+}
+.inputBox{
+  display: flex;
+  position: relative;
+  background-color: var(--color-secondary);
+  border: 1px solid var(--color-border);
+  margin-top: 28px;
+  width: 40vw;
+  border-radius: 10px;
+  min-height: fit-content;
+}
+
+.inputBox textarea{
+  background-color: transparent;
+  flex: 1;
+  border-radius: 10px;
+  border: 0;
+  padding: 10px 15px;
+  padding-bottom: 0px;
+  outline: 0;
+  height: 100%;
+  min-height: 20vh;
+}
+
+.inputBox .sendIcon{
+  position: absolute;
+  bottom: 5%;
+  right: 1%;
+  cursor: pointer;
+}
+.preview{
+  background-color: var(--color-secondary);
+  width: 90vw;
+  height: 90vh;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  margin-left: 15vw;
+  border-radius: 15px;
+}
+
+.preview .header{
+  background-color: rgb(46, 44, 44);
+  border-radius: 5px;
+  padding: 0px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.preview{
+  overflow: hidden;
+}
+
+.preview iframe{
+  height: calc(100vh - 70px);
+  overflow: auto;
+}
+.modelCon{
+  position: fixed;
+  width: 100vw;
+  min-height: 100vh;
+  background-color: var(--color-overlay);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  overflow-y: scroll;
+}
+
+.modelBox{
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}
+
+.modelBox .header{
+  border-bottom: 1px solid #ccc;
+  background-color: #efeeee;
+}
+
+.modelCon .icons .icon:hover{
+  transform: scale(1.1);
+  background-color: transparent !important;
+}
+
+.newTabIframe{
+  height: calc(100vh - 70px);
+  background-color: white;
+}
+.historyWrapper {
+  width: 90vw;        /* same as preview */
+  display: flex;
+  justify-content: flex-start; /* 👈 LEFT ALIGN */
+  margin-top: 20px;
+}
