@@ -254,3 +254,7 @@ body.light-mode .recentCard .dateText {
 body.light-mode h4.recentTitle {
   color: var(--color-text);
 }
+
+.preview.codeView {
+  height: auto;
+}
