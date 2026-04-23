@@ -1,78 +1,68 @@
-*{
+* {
   margin: 0;
   padding: 0;
 }
-body{
+body {
   margin: 0;
   padding: 0;
-  box-sizing:border-box ;
+  box-sizing: border-box;
   overflow-x: hidden;
   background-color: var(--color-bg);
   color: var(--color-text);
 }
+
 /* Light Mode Overrides */
 body.light-mode {
-  --color-bg: hsl(0, 0%, 98%);         /* White background */
-  --color-secondary: hsl(0, 0%, 94%);  /* Off-white */
-  --color-tertiary: hsl(0, 0%, 90%);   
-  --color-text: hsl(240, 6%, 5%);      /* Black text */
-  --color-text-desc: #4b5563;          /* Darker muted text */
+  --color-bg: hsl(0, 0%, 98%);
+  --color-secondary: hsl(0, 0%, 94%);
+  --color-tertiary: hsl(0, 0%, 90%);
+  --color-text: hsl(240, 6%, 5%);
+  --color-text-desc: #4b5563;
   --color-border: hsl(240, 6%, 85%);
   --color-border-subtle: hsl(240, 6%, 90%);
   --color-hover: hsl(240, 6%, 90%);
   --color-overlay: hsla(0, 0%, 100%, 0.7);
 }
-
-/* Update your existing .preview header to adapt to light mode */
 body.light-mode .preview .header {
   background-color: var(--color-tertiary);
   color: var(--color-text);
 }
-html{
+
+html {
   overflow-x: hidden;
 }
+
 :root {
-  /* Core Backgrounds */
-  --color-bg: hsl(240, 6%, 5%);        /* Deep black background */
-  --color-secondary: hsl(240, 6%, 8%); /* Slightly lighter black */
-  --color-tertiary: hsl(240, 6%, 12%); /* Cards, panels, modals */
-
-  /* Text */
-  --color-text: hsl(0, 0%, 98%);       /* Main text */
-  --color-text-desc: #b3b3b3;  /* Muted text */
-  --color-text-dim: hsl(0, 0%, 50%);   /* Disabled/placeholder text */
-
-  /* Borders & Dividers */
+  --color-bg: hsl(240, 6%, 5%);
+  --color-secondary: hsl(240, 6%, 8%);
+  --color-tertiary: hsl(240, 6%, 12%);
+  --color-text: hsl(0, 0%, 98%);
+  --color-text-desc: #b3b3b3;
+  --color-text-dim: hsl(0, 0%, 50%);
   --color-border: hsl(240, 6%, 20%);
   --color-border-subtle: hsl(240, 6%, 15%);
-
-  /* Accents */
-  --color-accent: #9933ff;  /* Primary accent (modern purple) */
+  --color-accent: #9933ff;
   --color-accent-hover: hsl(270, 100%, 65%);
-
-  /* State Colors */
-  --color-success: hsl(145, 60%, 45%); /* Green for success */
-  --color-error: hsl(0, 70%, 55%);     /* Red for errors */
-  --color-warning: hsl(40, 100%, 55%); /* Yellow for warnings */
-  --color-info: hsl(210, 100%, 60%);   /* Blue for info messages */
-
-  /* Overlays */
-  --color-overlay: hsla(240, 6%, 5%, 0.7);  /* For modals & menus */
-
-  /* Shadows */
+  --color-success: hsl(145, 60%, 45%);
+  --color-error: hsl(0, 70%, 55%);
+  --color-warning: hsl(40, 100%, 55%);
+  --color-info: hsl(210, 100%, 60%);
+  --color-overlay: hsla(240, 6%, 5%, 0.7);
   --shadow-low: 0 2px 6px hsla(0, 0%, 0%, 0.5);
   --shadow-mid: 0 4px 12px hsla(0, 0%, 0%, 0.6);
   --shadow-high: 0 8px 24px hsla(0, 0%, 0%, 0.7);
-
-  /* Interactive */
   --color-hover: hsl(240, 6%, 15%);
   --color-active: hsl(240, 6%, 18%);
   --color-focus-ring: hsl(270, 100%, 65%);
 }
-.nav{
+
+/* ── Navbar ── */
+.nav {
   border-bottom: 1px solid var(--color-border);
 }
-.icon{
+
+/* ── Icon buttons ── */
+.icon {
   width: 40px;
   height: 40px;
   display: flex;
@@ -80,31 +70,39 @@ html{
   justify-content: center;
   border-radius: 10px;
   cursor: pointer;
-  transition: .3s;
+  transition: 0.3s;
   border: 1px solid var(--color-border);
 }
-.icon:hover{
+.icon:hover {
   background-color: var(--color-hover);
 }
-.container{
+
+/* ── Page container ── */
+.container {
   min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 10vh;
+  padding-top: 8vh;
+  padding-left: 16px;
+  padding-right: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
-.inputBox{
+
+/* ── Input box ── */
+.inputBox {
   display: flex;
   position: relative;
   background-color: var(--color-secondary);
   border: 1px solid var(--color-border);
   margin-top: 28px;
-  width: 40vw;
+  width: 90vw;           /* ← was 40vw, broke on mobile */
+  max-width: 700px;      /* ← caps width on large screens */
   border-radius: 10px;
   min-height: fit-content;
 }
-
-.inputBox textarea{
+.inputBox textarea {
   background-color: transparent;
   flex: 1;
   border-radius: 10px;
@@ -114,42 +112,59 @@ html{
   outline: 0;
   height: 100%;
   min-height: 20vh;
+  color: var(--color-text);
+  font-size: 14px;
+  resize: none;
 }
-
-.inputBox .sendIcon{
+.inputBox .sendIcon {
   position: absolute;
   bottom: 5%;
   right: 1%;
   cursor: pointer;
 }
-.preview{
-  background-color: var(--color-secondary);
+
+/* ── Recent searches wrapper ── */
+.historyWrapper {
   width: 90vw;
-  height: 90vh;
-  margin-top: 40px;
-  margin-bottom: 40px;
-  margin-left: 15vw;
-  border-radius: 15px;
+  max-width: 700px;      /* ← matches inputBox */
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
 }
 
-.preview .header{
+/* ── Preview section ── */
+.preview {
+  background-color: var(--color-secondary);
+  width: 92vw;           /* ← was 90vw + margin-left:15vw = overflow */
+  max-width: 1400px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  margin-left: auto;     /* ← was hardcoded 15vw, now centered */
+  margin-right: auto;
+  border-radius: 15px;
+  overflow: hidden;
+  height: auto;          /* ← was 90vh, let content define height */
+}
+.preview .header {
   background-color: rgb(46, 44, 44);
-  border-radius: 5px;
-  padding: 0px 50px;
+  border-radius: 5px 5px 0 0;
+  padding: 0px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;       /* ← prevents overflow on small screens */
+  gap: 8px;
+  min-height: 70px;
 }
-
-.preview{
-  overflow: hidden;
-}
-
-.preview iframe{
-  height: calc(100vh - 70px);
+.preview iframe {
+  width: 100%;
+  height: 75vh;          /* ← consistent across devices */
   overflow: auto;
+  display: block;
 }
-.modelCon{
+
+/* ── Modal / New tab preview ── */
+.modelCon {
   position: fixed;
   width: 100vw;
   min-height: 100vh;
@@ -164,30 +179,78 @@ html{
   z-index: 100;
   overflow-y: scroll;
 }
-
-.modelBox{
+.modelBox {
   width: 100%;
   height: 100%;
   background-color: white;
 }
-
-.modelBox .header{
+.modelBox .header {
   border-bottom: 1px solid #ccc;
   background-color: #efeeee;
 }
-
-.modelCon .icons .icon:hover{
+.modelCon .icons .icon:hover {
   transform: scale(1.1);
   background-color: transparent !important;
 }
-
-.newTabIframe{
+.newTabIframe {
   height: calc(100vh - 70px);
   background-color: white;
+  width: 100%;
+  display: block;
 }
-.historyWrapper {
-  width: 90vw;        /* same as preview */
-  display: flex;
-  justify-content: flex-start; /* 👈 LEFT ALIGN */
-  margin-top: 20px;
+
+/* ── Responsive: tablet ── */
+@media (min-width: 640px) {
+  .inputBox {
+    width: 70vw;
+  }
+  .historyWrapper {
+    width: 70vw;
+  }
+}
+
+/* ── Responsive: desktop ── */
+@media (min-width: 1024px) {
+  .inputBox {
+    width: 40vw;
+  }
+  .historyWrapper {
+    width: 40vw;
+  }
+  .preview {
+    width: 90vw;
+  }
+}
+/* ── Recent Searches custom scrollbar ── */
+.recentScrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+.recentScrollbar::-webkit-scrollbar-track {
+  background: var(--color-secondary);
+  border-radius: 10px;
+}
+.recentScrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-accent);   /* purple #9933ff */
+  border-radius: 10px;
+}
+.recentScrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-hover);
+}
+/* ── Recent Searches light mode fix ── */
+body.light-mode .recentCard {
+  background-color: var(--color-secondary);
+  border-color: var(--color-border);
+}
+body.light-mode .recentCard:hover {
+  border-color: var(--color-accent);
+  background-color: var(--color-tertiary);
+}
+body.light-mode .recentCard .promptText {
+  color: var(--color-text);
+}
+body.light-mode .recentCard .dateText {
+  color: var(--color-text-desc);
+}
+body.light-mode h4.recentTitle {
+  color: var(--color-text);
 }
