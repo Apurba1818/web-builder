@@ -115,6 +115,25 @@ html {
   color: var(--color-text);
   font-size: 14px;
   resize: none;
+  overflow-y: auto;        /* ← ADD THIS */
+  scrollbar-width: thin;   /* ← ADD THIS (Firefox) */
+  scrollbar-color: var(--color-border) var(--color-tertiary); /* ← ADD THIS (Firefox) */
+}
+
+/* Chrome/Safari/Edge */
+.inputBox textarea::-webkit-scrollbar {
+  width: 4px;
+}
+.inputBox textarea::-webkit-scrollbar-track {
+  background: var(--color-tertiary);
+  border-radius: 10px;
+}
+.inputBox textarea::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 10px;
+}
+.inputBox textarea::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
 }
 .inputBox .sendIcon {
   position: absolute;
@@ -259,7 +278,7 @@ body.light-mode h4.recentTitle {
   height: auto;
 }
 /* ── Textarea custom scrollbar ── */
-.inputBox textarea::-webkit-scrollbar {
+/* .inputBox textarea::-webkit-scrollbar {
   width: 4px;
 }
 .inputBox textarea::-webkit-scrollbar-track {
@@ -272,4 +291,4 @@ body.light-mode h4.recentTitle {
 }
 .inputBox textarea::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent);
-}
+} */
