@@ -54,7 +54,7 @@ ANIMATION (optional):
 gsap.from(".animate-in", {opacity:0, y:30, duration:0.5});
 
 CONTENT:
-- Use realistic content (no lorem ipsum)
+- Use realistic content about :${prompt.trim()} (no lorem ipsum)
 
 TOPIC:
 ${prompt.trim()}
