@@ -22,19 +22,51 @@ router.post("/", async (req, res) => {
     return res.status(500).json({ error: "Server misconfigured: missing API key" });
   }
 
-const text_prompt = `Generate a fully functional single-file web application based on the topic.
+const text_prompt = `You are a frontend developer. Generate a single complete HTML file.
 
-OUTPUT FORMAT (STRICT):
-Return ONLY one complete HTML file enclosed in a single markdown code block starting with \`\`\`html. Zero conversational explanations.
+OUTPUT:
+- Return ONLY one markdown code block (no explanation).
 
-TECHNICAL CONSTRAINTS:
-- Tech Stack: HTML5, Tailwind CSS via CDN, Vanilla JS (ES6+), Inter font.
-- Architecture: Keep the code lightweight and minimal. Write direct, efficient functional logic without unnecessary boilerplate.
-- Safety: Zero external dependencies besides Tailwind. NEVER use unsafe eval().
-- UI/UX: Mobile-first responsive design. Include a functional dark/light mode toggle.
-- Functionality: The app must work perfectly out of the box. Handle user inputs, state, and edge cases safely. Use localStorage only if the topic requires data persistence.
+TECH:
+- Use Tailwind CDN
+- Use GSAP CDN (only if needed)
+- Use Inter font
 
-TOPIC: ${prompt.trim()}`;
+STRUCTURE (adapt based on topic):
+- Landing → Navbar, Hero, Features, Footer
+- Dashboard → Sidebar, Cards, Table
+- Form → Centered form with validation
+- CRUD → Table + modal actions
+
+DESIGN:
+- Clean modern UI
+- Dark/light mode toggle (localStorage)
+- Responsive (mobile-first)
+- Use Tailwind utility classes only
+
+FUNCTIONALITY:
+- Navbar toggle (mobile)
+- Implement complete functional logic when required
+- Handle edge cases and user input properly
+- Use localStorage for data persistence if needed
+- Use fetch() only if required by topic
+- Avoid unnecessary animations
+- Avoid unsafe eval()
+
+ANIMATION (optional):
+gsap.from(".animate-in", {opacity:0, y:30, duration:0.5});
+
+CONTENT:
+- Use realistic content based on the TOPIC:
+${prompt.trim()} (no lorem ipsum)
+
+TOPIC:
+${prompt.trim()}
+
+IMPORTANT:
+- Keep code minimal, clean, and fast
+- Avoid unnecessary complexity
+- Single HTML file only`;
 
   try {
     const groq = new Groq({ apiKey });
