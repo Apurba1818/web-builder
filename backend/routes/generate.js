@@ -46,15 +46,19 @@ DESIGN:
 
 FUNCTIONALITY:
 - Navbar toggle (mobile)
-- Basic JS interactivity only (no heavy logic)
+- Implement complete functional logic when required
+- Handle edge cases and user input properly
+- Use localStorage for data persistence if needed
 - Use fetch() only if required by topic
 - Avoid unnecessary animations
+- Avoid unsafe eval()
 
 ANIMATION (optional):
 gsap.from(".animate-in", {opacity:0, y:30, duration:0.5});
 
 CONTENT:
-- Use realistic content about :${prompt.trim()} (no lorem ipsum)
+- Use realistic content based on the TOPIC:
+${prompt.trim()} (no lorem ipsum)
 
 TOPIC:
 ${prompt.trim()}
