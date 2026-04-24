@@ -22,51 +22,38 @@ router.post("/", async (req, res) => {
     return res.status(500).json({ error: "Server misconfigured: missing API key" });
   }
 
-  const text_prompt = `You are a frontend developer. Generate a single complete HTML file.
+const text_prompt = `You are an Expert Systems Architect specializing in autonomous, high-performance, single-file web applications.
+Generate a fully functional, production-ready application inside a SINGLE HTML file containing all necessary CSS and JavaScript.
 
-OUTPUT:
-- Return ONLY one markdown code block (no explanation).
+OUTPUT FORMAT (STRICT):
+Return ONLY one complete HTML file enclosed in a single markdown code block starting with \`\`\`html. 
+Provide absolutely zero markdown formatting outside the code block. Provide zero conversational explanations.
 
-TECH:
-- Use Tailwind CDN
-- Use GSAP CDN (only if needed)
-- Use Inter font
+TECHNICAL CONSTRAINTS:
+Logic: Use strictly Vanilla JavaScript (ES6+). Zero external dependencies for logic, state, or rendering. No unsafe eval().
+Styling: Use Tailwind CSS via CDN. Implement a minimalist, modern, mobile-first design system. Include a functional Dark/Light mode toggle that persists user preference. Use the Inter font.
+Content: Generate a fully working tool based on the topic. Do not output placeholder text (Lorem Ipsum) or dummy functions.
 
-STRUCTURE (adapt based on topic):
-- Landing → Navbar, Hero, Features, Footer
-- Dashboard → Sidebar, Cards, Table
-- Form → Centered form with validation
-- CRUD → Table + modal actions
+ARCHITECTURAL MANDATES (NON-NEGOTIABLE):
+Inside the <script> tag, you MUST explicitly structure your code using a strict Model-View-Controller (MVC) separation of concerns:
 
-DESIGN:
-- Clean modern UI
-- Dark/light mode toggle (localStorage)
-- Responsive (mobile-first)
-- Use Tailwind utility classes only
+A. THE DATA LAYER (MOCK ASYNC API):
+- All data persistence MUST utilize the browser's localStorage.
+- You MUST encapsulate every localStorage operation inside a mock asynchronous API module.
+- Create distinct, comprehensive functions for all CRUD operations (Create, Read, Update, Delete) required by the application topic.
+- Every single data function MUST return a Promise (e.g., return new Promise((resolve, reject) => {... })) to accurately simulate network latency and backend database calls. Include error handling for storage limits.
 
-FUNCTIONALITY:
-- Navbar toggle (mobile)
-- Implement complete functional logic when required
-- Handle edge cases and user input properly
-- Use localStorage for data persistence if needed
-- Use fetch() only if required by topic
-- Avoid unnecessary animations
-- Avoid unsafe eval()
+B. STATE MANAGEMENT:
+- Maintain a single, centralized JavaScript state object.
+- Application logic MUST NEVER read data directly from the DOM.
+- UI event listeners must only dispatch actions that update the state object and subsequently call the Mock Async API.
 
-ANIMATION (optional):
-gsap.from(".animate-in", {opacity:0, y:30, duration:0.5});
+C. UI RENDERING:
+- Create dedicated rendering functions that strictly listen to state changes and update the DOM accordingly.
+- Ensure all complex interactions, filtering, modal behaviors, and edge cases are fully implemented and functional.
 
-CONTENT:
-- Use realistic content based on the TOPIC:
-${prompt.trim()} (no lorem ipsum)
-
-TOPIC:
-${prompt.trim()}
-
-IMPORTANT:
-- Keep code minimal, clean, and fast
-- Avoid unnecessary complexity
-- Single HTML file only`;
+TOPIC / APPLICATION SPECIFICATION:
+${prompt.trim()}`;
 
   try {
     const groq = new Groq({ apiKey });
