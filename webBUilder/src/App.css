@@ -258,3 +258,18 @@ body.light-mode h4.recentTitle {
 .preview.codeView {
   height: auto;
 }
+/* ── Textarea custom scrollbar ── */
+.inputBox textarea::-webkit-scrollbar {
+  width: 4px;
+}
+.inputBox textarea::-webkit-scrollbar-track {
+  background: var(--color-tertiary);
+  border-radius: 10px;
+}
+.inputBox textarea::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 10px;
+}
+.inputBox textarea::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
