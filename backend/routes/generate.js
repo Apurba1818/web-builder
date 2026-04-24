@@ -22,38 +22,19 @@ router.post("/", async (req, res) => {
     return res.status(500).json({ error: "Server misconfigured: missing API key" });
   }
 
-const text_prompt = `You are an Expert Systems Architect specializing in autonomous, high-performance, single-file web applications.
-Generate a fully functional, production-ready application inside a SINGLE HTML file containing all necessary CSS and JavaScript.
+const text_prompt = `Generate a fully functional single-file web application based on the topic.
 
 OUTPUT FORMAT (STRICT):
-Return ONLY one complete HTML file enclosed in a single markdown code block starting with \`\`\`html. 
-Provide absolutely zero markdown formatting outside the code block. Provide zero conversational explanations.
+Return ONLY one complete HTML file enclosed in a single markdown code block starting with \`\`\`html. Zero conversational explanations.
 
 TECHNICAL CONSTRAINTS:
-Logic: Use strictly Vanilla JavaScript (ES6+). Zero external dependencies for logic, state, or rendering. No unsafe eval().
-Styling: Use Tailwind CSS via CDN. Implement a minimalist, modern, mobile-first design system. Include a functional Dark/Light mode toggle that persists user preference. Use the Inter font.
-Content: Generate a fully working tool based on the topic. Do not output placeholder text (Lorem Ipsum) or dummy functions.
+- Tech Stack: HTML5, Tailwind CSS via CDN, Vanilla JS (ES6+), Inter font.
+- Architecture: Keep the code lightweight and minimal. Write direct, efficient functional logic without unnecessary boilerplate.
+- Safety: Zero external dependencies besides Tailwind. NEVER use unsafe eval().
+- UI/UX: Mobile-first responsive design. Include a functional dark/light mode toggle.
+- Functionality: The app must work perfectly out of the box. Handle user inputs, state, and edge cases safely. Use localStorage only if the topic requires data persistence.
 
-ARCHITECTURAL MANDATES (NON-NEGOTIABLE):
-Inside the <script> tag, you MUST explicitly structure your code using a strict Model-View-Controller (MVC) separation of concerns:
-
-A. THE DATA LAYER (MOCK ASYNC API):
-- All data persistence MUST utilize the browser's localStorage.
-- You MUST encapsulate every localStorage operation inside a mock asynchronous API module.
-- Create distinct, comprehensive functions for all CRUD operations (Create, Read, Update, Delete) required by the application topic.
-- Every single data function MUST return a Promise (e.g., return new Promise((resolve, reject) => {... })) to accurately simulate network latency and backend database calls. Include error handling for storage limits.
-
-B. STATE MANAGEMENT:
-- Maintain a single, centralized JavaScript state object.
-- Application logic MUST NEVER read data directly from the DOM.
-- UI event listeners must only dispatch actions that update the state object and subsequently call the Mock Async API.
-
-C. UI RENDERING:
-- Create dedicated rendering functions that strictly listen to state changes and update the DOM accordingly.
-- Ensure all complex interactions, filtering, modal behaviors, and edge cases are fully implemented and functional.
-
-TOPIC / APPLICATION SPECIFICATION:
-${prompt.trim()}`;
+TOPIC: ${prompt.trim()}`;
 
   try {
     const groq = new Groq({ apiKey });
