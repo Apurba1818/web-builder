@@ -1,6 +1,6 @@
 // routes/generate.js
 const express = require("express");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq = require("groq-sdk");
 const { connectDB, getDB } = require("../db");
 
 const router = express.Router();
@@ -17,28 +17,64 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: "Prompt is required" });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: "Server misconfigured: missing API key" });
   }
 
   const text_prompt = `You are a frontend developer. Generate a single complete HTML file.
 
-TECH: Tailwind CDN, GSAP CDN, Google Fonts
-SECTIONS: Navbar, Hero, Features (3 cards), Footer ("Made with WebBuilder")  
-DESIGN: Dark mode toggle, responsive, glassmorphism cards
-ANIMATIONS: Simple GSAP fade-in on load only
-OUTPUT: Single code block only. No explanation.
+OUTPUT:
+- Return ONLY one markdown code block (no explanation).
 
-Topic: ${prompt.trim()}`;
+TECH:
+- Use Tailwind CDN
+- Use GSAP CDN (only if needed)
+- Use Inter font
+
+STRUCTURE (adapt based on topic):
+- Landing → Navbar, Hero, Features, Footer
+- Dashboard → Sidebar, Cards, Table
+- Form → Centered form with validation
+- CRUD → Table + modal actions
+
+DESIGN:
+- Clean modern UI
+- Dark/light mode toggle (localStorage)
+- Responsive (mobile-first)
+- Use Tailwind utility classes only
+
+FUNCTIONALITY:
+- Navbar toggle (mobile)
+- Basic JS interactivity only (no heavy logic)
+- Use fetch() only if required by topic
+- Avoid unnecessary animations
+
+ANIMATION (optional):
+gsap.from(".animate-in", {opacity:0, y:30, duration:0.5});
+
+CONTENT:
+- Use realistic content (no lorem ipsum)
+
+TOPIC:
+${prompt.trim()}
+
+IMPORTANT:
+- Keep code minimal, clean, and fast
+- Avoid unnecessary complexity
+- Single HTML file only`;
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const result = await genAI
-      .getGenerativeModel({ model: "gemini-2.5-flash-lite" })
-      .generateContent(text_prompt);
+    const groq = new Groq({ apiKey });
 
-    const raw = result.response.text();
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: text_prompt }],
+      max_tokens: 8000,
+      temperature: 0.7
+    });
+
+    const raw = completion.choices[0]?.message?.content || "";
     const code = extractCode(raw);
 
     // Save search to MongoDB (non-fatal if it fails)
@@ -59,7 +95,7 @@ Topic: ${prompt.trim()}`;
 
     return res.status(200).json({ code });
   } catch (err) {
-    console.error("Gemini error:", err.message);
+    console.error("Groq error:", err.message);
     return res.status(500).json({ error: "AI generation failed. Please try again." });
   }
 });
