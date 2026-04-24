@@ -11,14 +11,13 @@ import { RiComputerLine } from "react-icons/ri";
 import { FaTabletAlt } from "react-icons/fa";
 import { ImMobile2 } from "react-icons/im";
 import { IoMdClose } from "react-icons/io";
-
 import { toast } from 'react-toastify';
 import { FadeLoader } from 'react-spinners';
 import RecentSearches from "./components/RecentSearches";
-
 import { useUser } from '@clerk/clerk-react';
- 
+
 const App = () => {
+  const [previewWidth, setPreviewWidth] = useState("100%");
   const { user } = useUser();
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [refresh, setRefresh] = useState(false);
@@ -42,10 +41,10 @@ const App = () => {
 </html>
     `
   );
+
   const toggleTheme = () => {
-  setIsDarkMode(prev => !prev);
-};
- 
+    setIsDarkMode(prev => !prev);
+  };
 
   useEffect(() => {
     if (isDarkMode) {
@@ -55,18 +54,25 @@ const App = () => {
     }
   }, [isDarkMode]);
 
-  
-  
- 
-  
-  function extractCode(response) {
-    const match = response.match(/```(?:\w+)?\n?([\s\S]*?)```/);
-    return match ? match[1].trim() : response.trim();
-  };
- 
-  const downloadCode = ()=> {
+  function getSandboxedCode(rawCode) {
+    const blocker = `
+      <script>
+        window.addEventListener('click', function(e) {
+          const a = e.target.closest('a');
+          if (a) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }, true);
+        window.open = function() { return null; };
+      <\/script>
+    `;
+    return rawCode.replace('</body>', blocker + '</body>');
+  }
+
+  const downloadCode = () => {
     let filename = "webBuilderCode.html";
-    let blob = new Blob([code], {type: "text/plain"});
+    let blob = new Blob([code], { type: "text/plain" });
     let url = URL.createObjectURL(blob);
     let a = document.createElement("a");
     a.href = url;
@@ -74,173 +80,199 @@ const App = () => {
     a.click();
   };
 
- // ADD this function
-function getSandboxedCode(rawCode) {
-  const blocker = `
-    <script>
-      // Block all navigation attempts
-      window.addEventListener('click', function(e) {
-        const a = e.target.closest('a');
-        if (a) { e.preventDefault(); e.stopPropagation(); }
-      }, true);
-      window.open = function() { return null; };
-      Object.defineProperty(window, 'location', {
-        get: function() { return window._fakeLocation || {}; },
-        set: function() {}
-      });
-    <\/script>
-  `;
-  return rawCode.replace('</body>', blocker + '</body>');
-}
- 
-//   
-async function getResponse() {
-  if (!user?.id) {
-    toast.error("Please sign in first!");
-    return;
-  }
-  
-  if (prompt === "") {
-    toast.error("Please enter a prompt!");
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/generate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-      prompt: prompt,
-      userId: user?.id,
-      userEmail: user?.primaryEmailAddress?.emailAddress ?? ""
-})
-    });
-
-    const data = await res.json();
-
-    if (data.code) {
-      setCode(data.code);
-    } else {
-      toast.error("Failed to generate code");
+  async function getResponse() {
+    if (!user?.id) {
+      toast.error("Please sign in first!");
+      return;
+    }
+    if (prompt === "") {
+      toast.error("Please enter a prompt!");
+      return;
     }
 
-  } catch (err) {
-    console.error(err);
-    toast.error("Server error!");
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: prompt,
+          userId: user?.id,
+          userEmail: user?.primaryEmailAddress?.emailAddress ?? ""
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.code) {
+        setCode(data.code);
+        setRefresh(prev => !prev);
+      } else {
+        toast.error("Failed to generate code");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Server error!");
+    }
+
+    setLoading(false);
   }
 
-  setLoading(false);
-}
- 
- 
   return (
     <>
       <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       <div className="container">
-        <h3 className='text-[30px] font-[700]'>Create beautiful websites with <span className='bg-gradient-to-br from-violet-400  to-purple-600 bg-clip-text text-transparent'>WebBuilder</span></h3>
-        <p className='mt-2 text-[16px] text-[#b3b3b3]'>Describe your website and ai will code for you.</p>
- 
+        <h3 className='text-[30px] font-[700]'>
+          Create beautiful websites with{' '}
+          <span className='bg-gradient-to-br from-violet-400 to-purple-600 bg-clip-text text-transparent'>
+            WebBuilder
+          </span>
+        </h3>
+        <p className='mt-2 text-[16px] text-[#b3b3b3]'>
+          Describe your website and ai will code for you.
+        </p>
+
         <div className="inputBox">
-          <textarea onChange={(e) => { setPrompt(e.target.value) }} value={prompt} placeholder='describe your website in detail.'></textarea>
-          {
-            prompt !== "" ?
-              <>
-                <i onClick={getResponse} className='sendIcon text-[20px] w-[30px] h-[30px] flex items-center justify-center bg-[#9933ff] rounded-[50%] transition-all duration-300 hover:opacity-[.8]'><MdOutlineArrowUpward /></i>
-              </> : ""
-          }
+          <textarea
+            onChange={(e) => { setPrompt(e.target.value) }}
+            value={prompt}
+            placeholder='describe your website in detail.'
+          ></textarea>
+          {prompt !== "" && (
+            <i
+              onClick={getResponse}
+              className='sendIcon text-[20px] w-[30px] h-[30px] flex items-center justify-center bg-[#9933ff] rounded-[50%] transition-all duration-300 hover:opacity-[.8]'
+            >
+              <MdOutlineArrowUpward />
+            </i>
+          )}
         </div>
 
         <div className="historyWrapper">
-            {user?.id && (
-  <RecentSearches userId={user.id} refresh={refresh} setPrompt={setPrompt} />
-            )}
-
+          {user?.id && (
+            <RecentSearches userId={user.id} refresh={refresh} setPrompt={setPrompt} />
+          )}
         </div>
- 
-        <p className='text-[20px] font-[700] mt-[10vh]'>Your AI-Generated Website will appear here.</p>
-        
 
-        
+        <p className='text-[20px] font-[700] mt-[10vh]'>
+          Your AI-Generated Website will appear here.
+        </p>
+
         <div className={`preview ${isShowCode ? 'codeView' : ''}`}>
           <div className="header w-full h-[70px]">
             <h3 className='font-bold text-[16px]'>Live Preview</h3>
- 
+
             <div className="icons flex items-center gap-[8px] md:gap-[15px]">
-  <div onClick={() => { setIsInNewTab(true) }} className="icon !w-[auto] !p-[8px] md:!p-[12px] flex items-center gap-[6px] text-[13px] md:text-[14px]">
-    <span className="hidden sm:inline">Open in new tab</span> <ImNewTab />
-  </div>
-  <div onClick={downloadCode} className="icon !w-[auto] !p-[8px] md:!p-[12px] flex items-center gap-[6px] text-[13px] md:text-[14px]">
-    <span className="hidden sm:inline">Download</span> <IoMdDownload />
-  </div>
-  <div onClick={() => { setIsShowCode(!isShowCode) }} className="icon !w-[auto] !p-[8px] md:!p-[12px] flex items-center gap-[6px] text-[13px] md:text-[14px]">
-    <span className="hidden sm:inline">{isShowCode ? "Hide Code" : "Show Code"}</span>
-    {isShowCode ? <FaEyeSlash /> : <BiSolidShow />}
-  </div>
-</div>
-          </div>
- 
-          {
-            isShowCode ? <>
-              <Editor onChange={(code)=>{setCode(code)}} height="75vh" theme='vs-dark' defaultLanguage="html" value={code} />
-            </> : <>
-              {
-                loading ?
-                  <div className='w-full h-full flex items-center justify-center flex-col'>
-                    <FadeLoader color='#9933ff'/>
-                    <h3 className='text-[23px] mt-4 font-semibold'><span className='bg-gradient-to-br from-violet-400  to-purple-600 bg-clip-text text-transparent'>Generating</span> your website...</h3>
-                  </div> :
-                  <>
-                    
-                    <iframe
-  srcDoc={getSandboxedCode(code)}
-  className='w-full h-[80vh] bg-[white]'
-  sandbox="allow-scripts allow-same-origin"
-/>
-                  </>
-              }
-            </>
-          }
-        </div>
-        
- 
-      </div>
- 
- 
-      {
-        isInNewTab ?
-          <>
-            <div className="modelCon">
-              <div className="modelBox text-black">
-                <div className="header w-full px-[50px] h-[70px] flex items-center justify-between ">
-                  <h3 className='font-[700]'>Preview</h3>
- 
-                  <div className="icons flex items-center gap-[15px]">
-                    <div className="icon"><RiComputerLine /></div>
-                    <div className="icon"><FaTabletAlt /></div>
-                    <div className="icon"><ImMobile2 /></div>
-                  </div>
- 
-                  <div className="icons">
-                    <div className="icon" onClick={() => { setIsInNewTab(false) }}><IoMdClose /></div>
-                  </div>
-                </div>
-                <iframe
-  srcDoc={getSandboxedCode(code)}
-  className='w-full h-[80vh] bg-[white]'
-  sandbox="allow-scripts allow-same-origin"
-/>
+              <div
+                onClick={() => { setIsInNewTab(true) }}
+                className="icon !w-[auto] !p-[8px] md:!p-[12px] flex items-center gap-[6px] text-[13px] md:text-[14px]"
+              >
+                <span className="hidden sm:inline">Open in new tab</span>
+                <ImNewTab />
+              </div>
+              <div
+                onClick={downloadCode}
+                className="icon !w-[auto] !p-[8px] md:!p-[12px] flex items-center gap-[6px] text-[13px] md:text-[14px]"
+              >
+                <span className="hidden sm:inline">Download</span>
+                <IoMdDownload />
+              </div>
+              <div
+                onClick={() => { setIsShowCode(!isShowCode) }}
+                className="icon !w-[auto] !p-[8px] md:!p-[12px] flex items-center gap-[6px] text-[13px] md:text-[14px]"
+              >
+                <span className="hidden sm:inline">
+                  {isShowCode ? "Hide Code" : "Show Code"}
+                </span>
+                {isShowCode ? <FaEyeSlash /> : <BiSolidShow />}
               </div>
             </div>
-          </> : ""
-      }
+          </div>
+
+          {isShowCode ? (
+            <Editor
+              onChange={(code) => { setCode(code) }}
+              height="75vh"
+              theme='vs-dark'
+              defaultLanguage="html"
+              value={code}
+            />
+          ) : (
+            loading ? (
+              <div className='w-full h-full flex items-center justify-center flex-col'>
+                <FadeLoader color='#9933ff' />
+                <h3 className='text-[23px] mt-4 font-semibold'>
+                  <span className='bg-gradient-to-br from-violet-400 to-purple-600 bg-clip-text text-transparent'>
+                    Generating
+                  </span>{' '}
+                  your website...
+                </h3>
+              </div>
+            ) : (
+              <iframe
+                srcDoc={getSandboxedCode(code)}
+                className='w-full h-[80vh] bg-[white]'
+                sandbox="allow-scripts"
+              />
+            )
+          )}
+        </div>
+      </div>
+
+      {isInNewTab && (
+        <div className="modelCon">
+          <div className="modelBox text-black">
+            <div className="header w-full px-[50px] h-[70px] flex items-center justify-between">
+              <h3 className='font-[700]'>Preview</h3>
+
+              <div className="icons flex items-center gap-[15px]">
+                {/* ✅ Desktop */}
+                <div
+                  onClick={() => setPreviewWidth("100%")}
+                  className={`icon ${previewWidth === "100%" ? "!border-purple-500 !text-purple-400" : ""}`}
+                >
+                  <RiComputerLine />
+                </div>
+                {/* ✅ Tablet */}
+                <div
+                  onClick={() => setPreviewWidth("768px")}
+                  className={`icon ${previewWidth === "768px" ? "!border-purple-500 !text-purple-400" : ""}`}
+                >
+                  <FaTabletAlt />
+                </div>
+                {/* ✅ Mobile */}
+                <div
+                  onClick={() => setPreviewWidth("375px")}
+                  className={`icon ${previewWidth === "375px" ? "!border-purple-500 !text-purple-400" : ""}`}
+                >
+                  <ImMobile2 />
+                </div>
+              </div>
+
+              {/* ✅ Close — resets width */}
+              <div className="icons">
+                <div
+                  className="icon"
+                  onClick={() => { setIsInNewTab(false); setPreviewWidth("100%"); }}
+                >
+                  <IoMdClose />
+                </div>
+              </div>
+            </div>
+
+            {/* ✅ iframe respects previewWidth */}
+            <iframe
+              srcDoc={getSandboxedCode(code)}
+              style={{ width: previewWidth }}
+              className='newTabIframe transition-all duration-300 mx-auto block'
+              sandbox="allow-scripts"
+            />
+          </div>
+        </div>
+      )}
     </>
-  )
-}
- 
-export default App
+  );
+};
 
-
+export default App;
