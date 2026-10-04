@@ -54,21 +54,84 @@ const App = () => {
     }
   }, [isDarkMode]);
 
+
   function getSandboxedCode(rawCode) {
-    const blocker = `
-      <script>
-        window.addEventListener('click', function(e) {
-          const a = e.target.closest('a');
-          if (a) {
-            e.preventDefault();
-            e.stopPropagation();
+  // Runs first in the preview: gives the page an in-memory localStorage/sessionStorage
+  // so scripts don't crash in the sandbox (we deliberately do NOT use allow-same-origin)
+  const storageShim = `
+    <script>
+      (function () {
+        function makeStore() {
+          var m = {};
+          return {
+            getItem: function (k) { return Object.prototype.hasOwnProperty.call(m, k) ? m[k] : null; },
+            setItem: function (k, v) { m[k] = String(v); },
+            removeItem: function (k) { delete m[k]; },
+            clear: function () { m = {}; },
+            key: function (i) { return Object.keys(m)[i] || null; },
+            get length() { return Object.keys(m).length; }
+          };
+        }
+        ["localStorage", "sessionStorage"].forEach(function (name) {
+          try {
+            window[name].getItem("__test");
+          } catch (e) {
+            try {
+              Object.defineProperty(window, name, { value: makeStore(), configurable: true });
+            } catch (e2) {}
           }
-        }, true);
-        window.open = function() { return null; };
-      <\/script>
-    `;
-    return rawCode.replace('</body>', blocker + '</body>');
+        });
+      })();
+    <\/script>
+  `;
+
+  const blocker = `
+    <script>
+      window.addEventListener('click', function(e) {
+        const a = e.target.closest('a');
+        if (a) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+      window.open = function() { return null; };
+    <\/script>
+  `;
+
+  let html = rawCode;
+
+  // Shim goes as early as possible, before any of the page's own scripts
+  if (/<head[^>]*>/i.test(html)) {
+    html = html.replace(/<head[^>]*>/i, (m) => m + storageShim);
+  } else {
+    html = storageShim + html;
   }
+
+  // Link/popup blocker goes at the end of the body (or the end of the file)
+  if (/<\/body>/i.test(html)) {
+    html = html.replace(/<\/body>/i, () => blocker + "</body>");
+  } else {
+    html += blocker;
+  }
+
+  return html;
+}
+
+  // function getSandboxedCode(rawCode) {
+  //   const blocker = `
+  //     <script>
+  //       window.addEventListener('click', function(e) {
+  //         const a = e.target.closest('a');
+  //         if (a) {
+  //           e.preventDefault();
+  //           e.stopPropagation();
+  //         }
+  //       }, true);
+  //       window.open = function() { return null; };
+  //     <\/script>
+  //   `;
+  //   return rawCode.replace('</body>', blocker + '</body>');
+  // }
 
   const downloadCode = () => {
     let filename = "webBuilderCode.html";
